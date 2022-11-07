@@ -1,0 +1,48 @@
+services:
+  mysqldb:
+    image: mysql:8.0
+    container_name: mysqlcontainer
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    volumes:
+      - ./dbinit/init.sql:/docker-entrypoint-initdb.d/0_init.sql
+      - $HOME/database:/var/lib/mysql
+    ports:
+      - 3307:3306
+    expose:
+      - 3306
+    environment:
+      MYSQL_DATABASE: usersdb
+      MYSQL_PASSWORD: Val12345-%
+      MYSQL_ROOT_PASSWORD: Val12345-%
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysqldb
+    networks:
+      - internalnet
+
+  nodeapp:
+    container_name: nodeappV1
+    build: .
+    image: nodeimage:v1
+    environment:
+      DB_HOST: mysqldb
+      DB_PASSWORD: 'Val12345-%'
+      DB_NAME: usersdb
+      DB_PORT: 3306
+      DB_CONNECTION_LIMIT: 10
+      SERVER_PORT: 3000
+      SERVICE_TAGS: prod
+      SERVICE_NAME: nodeappservice
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+    depends_on:
+      - mysqldb
+    networks:
+      - internalnet
+    volumes:
+      - ${PWD}:/app
+networks:
+  internalnet:
+    driver: bridge
