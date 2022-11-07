@@ -94,7 +94,7 @@ export const handleGraphCreation = async (req: Request, res: Response) => {
         }
     } catch (error) {
         console.error(error);
-        return res.status(Code.OK).json({
+        return res.status(Code.INTERNAL_SERVER_ERROR).json({
             message: 'Something went wrong',
             error: (error as Error).message
         })
