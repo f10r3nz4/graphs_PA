@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { connection } from "../../config/mysql.config";
-import { HttpResponse } from "../../domain/response";
 import { CustomRequest, User } from "../../interface/user";
 import { QUERY } from "../../query/user.query";
 import { Code } from "../../enum/code.enum";
@@ -98,7 +97,7 @@ export const chargeToken = async (req: Request, res: Response) => {
 
     if(receiver === undefined) {
         return res.status(Code.BAD_REQUEST).json({
-            message: 'Specify a recevier email'
+            message: 'Specify a receiver email'
         });
     }
 
