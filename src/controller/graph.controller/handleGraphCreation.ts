@@ -7,13 +7,16 @@ import { daoLinks } from "../dao/dao.links/dao.links";
 import { daoNodes } from "../dao/dao.nodes/dao.nodes";
 import { daoUsers } from "../dao/dao.users/dao.users";
 
-//TODO: do same thing for links as done with nodes (add them in database when user create a new graph in db)
+//gestisce la creazione del grafo intesa come inserimento di nodi e link nelle rispettive tabelle
+//le informazioni vengono inserite nella tabella grafo insieme all'identificativo dell'utente che lo crea
+//si utilizza DAO per interagire con il DB
 export const handleGraphCreation = async (req: Request, res: Response) => {
-    const links = req.body.links as LinkI[];
+    const links = req.body.links as LinkI[]; //richiamo gli archi con l'interfaccia
     let oriented = req.body.oriented;
+    //recupero le informazioni interessanti dall'utente loggato
     const email = (req as CustomRequest).user.email;
     const balance = (req as CustomRequest).user.token;
-
+    
     const dao: daoGraphs = new daoGraphs();
     const daoForNodes: daoNodes = new daoNodes();
     const daoForLinks: daoLinks = new daoLinks();
@@ -48,11 +51,11 @@ export const handleGraphCreation = async (req: Request, res: Response) => {
             message: 'Please provide at least one link'
         });
     }
-
+    //si setta l'orientamento del grafo come non orientato di default
     if (oriented === undefined) {
         oriented = false;
     }
-
+    //controllo che l'utente abbia abbastanza credito per creare il grafo
     const { userHaveEnoughTokens, cost } = doesUserHaveEnoughTokens({ oriented: oriented, links: links }, balance);
     if (!userHaveEnoughTokens) {
         return res.status(400).json({
@@ -61,19 +64,21 @@ export const handleGraphCreation = async (req: Request, res: Response) => {
     }
 
     try {
-        await dao.createGraph(email, oriented);
-        const graphs = await dao.getGraphsByEmail(email);
+        await dao.createGraph(email, oriented); //crea il grafo sul database tramite il DAO
+        //recupera il grafo creato come ultimo grafo creato dall'utente recuperandolo dall'email
+        const graphs = await dao.getGraphsByEmail(email); 
         let lastGraphCreated;
         if (graphs.length > 0) {
             lastGraphCreated = graphs[graphs.length - 1];
         } else {
             lastGraphCreated = graphs[0];
         }
+        //prendo le informazioni che definiscono il grafo
         for (let i = 0; i < links.length; i++) {
             const fromNode = links[i].from;
             const toNode = links[i].to;
             const weight = links[i].weight;
-
+        //inserisco le informazioni del grafo nelle relative tabelle attraverso i DAO
             await daoForNodes.addNode(
                 `${fromNode}-${lastGraphCreated.id}`,
                 fromNode,
@@ -90,7 +95,7 @@ export const handleGraphCreation = async (req: Request, res: Response) => {
                 weight,
                 lastGraphCreated.id,
             )
-            await daoForUser.removeTokens(email, cost);
+            await daoForUser.removeTokens(email, cost); //rimuovo il credito necessario per la creazione 
         }
     } catch (error) {
         console.error(error);
@@ -105,20 +110,21 @@ export const handleGraphCreation = async (req: Request, res: Response) => {
         cost: cost
     })
 }
-
+//conteggio del credito necessario
 const doesUserHaveEnoughTokens = (graphToBuild: GraphI, balance: number): {
     userHaveEnoughTokens: boolean,
     cost: number
 } => {
-    const nodesToAdd = new Map<String, boolean>();
-    const linksToAdd = new Map<String, boolean>();
-    let cost = 0;
-    let userHasEnoughTokens = false;
-
+    const nodesToAdd = new Map<String, boolean>(); //nome nodo e flag di creazione
+    const linksToAdd = new Map<String, boolean>(); //nome arco e flag di creazione
+    let cost = 0; //costo di partenza
+    let userHasEnoughTokens = false; //set di default
+    //setta i costi necessari per la creazione
     const costsForAction = {
         node: 0.25,
         link: 0.01
     };
+    //conta il costo totale come somma di nodo di partenza, di arrivo e arco
     graphToBuild.links.map((link) => {
         if (!nodesToAdd.get(link.from)) {
             nodesToAdd.set(link.from, true);
@@ -136,7 +142,7 @@ const doesUserHaveEnoughTokens = (graphToBuild: GraphI, balance: number): {
     })
 
     console.log(`Cost for the creation of this graph: ${cost}. \nUser balance: ${balance}`);
-    if (balance >= cost) {
+    if (balance >= cost) { //controllo effettivo che l'utente abbia abbastanza token per creare il grafo
         userHasEnoughTokens = true;
     }
     return {
