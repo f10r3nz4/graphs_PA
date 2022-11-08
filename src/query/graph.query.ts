@@ -9,7 +9,7 @@ export const QUERY = {
     SELECT_WEIGHT_OF_LINK: 'SELECT (weight) FROM LINK WHERE (node_to = ? AND node_from = ?)',
     SELECT_WEIGHT_OF_LINK_BY_ID: 'SELECT (weight) FROM LINK WHERE (id = ?)',
     UPDATE_WEIGHT_OF_LINK_WITH_ID: 'UPDATE LINK SET weight = ? WHERE id = ?',
-    SELECT_ORIENTATION_GRPAH: 'SELECT (oriented) FROM GRAPH WHERE (id = ?)',
+    SELECT_ORIENTATION_GRAPH: 'SELECT (oriented) FROM GRAPH WHERE (id = ?)',
     CREATE_GRAPH: 'INSERT INTO GRAPH (users_email, oriented) VALUES(?, ?)',
     INSERT_NODE: 'INSERT INTO NODES (id,name, graph_id) VALUES (?,?,?)',
     INSERT_LINK: 'INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUE (?,?,?,?,?)',
