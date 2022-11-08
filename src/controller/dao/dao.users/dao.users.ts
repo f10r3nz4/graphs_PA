@@ -6,13 +6,17 @@ import { ResultSet } from "../../user.controller/user.controller";
 export class daoUsers {
     pool;
 
+    //connessione al DB
     constructor() {
         this.pool = connection();
     }
 
+    //scalo il credito all'utente per l'esecuzione o la creazione di un modello
     async removeTokens(email: String, amount: number) {
+        //costante dove viene salvato il totale attuale del credito dell'utente
         const currentBalance = await this.getBalance(email);
         try { 
+            //se il costo dell'esecuzione o creazione del grafo è superiore al credito posseduto dall'utente c'è un errore
             if(currentBalance < amount) {
                 throw new Error('Unsufficient balance');
             } else {
@@ -26,6 +30,7 @@ export class daoUsers {
         }
     }
 
+    //con una select sull'utente restituisco le informazioni sul suo credito
     async getBalance(email: String): Promise<number> {
         const rs: ResultSet = await this.pool.query(QUERY.SELECT_USER, [
             email
