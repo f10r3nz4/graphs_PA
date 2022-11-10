@@ -23,8 +23,10 @@ docker-compose up --build
 3. In un altra finestra, dopo l'esecuzione, posizionarsi sulla cartella graph_PA e lanciare:
 ```
 docker exec -i mysqlcontainer mysql -uroot -pVal12345-% usersdb < ./dbinit/init.sql
-  ```
+```
+
 *NB*: nel file init.sql 
+
 4. Aprire Postman e digitare
 ```
 http://localhost:3000/
@@ -119,7 +121,7 @@ Esempio:
   - ``` isOriented ```, 
   - ``` heuristic ```,
 - Formato risposta:  ``` application/json ```
-- Descrizione: l'utente esegue il modello indicando l'id del grafo, l'algoritmo di esecuzione, i nodi di inizio e fine, l'ordinamento e l'euristica
+- Descrizione: l'utente esegue il modello indicando l'id del grafo, l'algoritmo di esecuzione (astar, agreedy, nba), il nome dei nodi di inizio e fine, l'ordinamento e l'euristica (norma 1 o norma2)
 
 Esempio:
 
@@ -169,7 +171,7 @@ Esempio:
 
 ***/chargeTokens SUCCESS:***
 
-![chargetokens success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-chargeToken-success.drawio.png?raw=true)
+![chargetokens success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/Diagramma%20senza%20titolo-chargeToken-success.drawio.png?raw=true)
 
 ***/chargeTokens ERROR:***
 
@@ -199,11 +201,11 @@ Esempio:
 
 ***/graph/modifyWeight ERROR:***
 
-![graphmodifyweight error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-graphs_modifyWeight%20error.drawio.png?raw=true)
+![graphmodifyweight error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/Diagramma%20senza%20titolo-graphs_modifyWeight%20error.drawio.png?raw=true)
 
 ***/runGraph SUCCESS:***
 
-![rungraph success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-_runGraph.drawio.png?raw=true)
+![rungraph success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/Diagramma%20senza%20titolo-_runGraph.drawio.png?raw=true)
 
 ***/runGraph ERROR:***
 
@@ -218,6 +220,15 @@ Esempio:
 
 #### MVC
 
+Pattern Model-View-Controller utilizzato per dividere il codice in blocchi di funzionalità distinte. Nel presente la componente View non è stataa inserita in quanto non richiesta, quindi il pattern diventa Model - Controller.
+- *Controller*, composto da "user" e "graph" che gestiscono rispettivamente l'utente e il modello. Riceve i comandi e reagisce eseguendo le operazioni richieste restituendo un risultato JSON.
+- *Model*, si interfaccia con la base di dati, ne astrae le infomrazioni in modo che possano essere manipolate dal Controller.
+
 #### DAO
 
+Pattern DAO per la gestione della persistenza, utilizzato per il mantenimento di una rigida separazione tra le componenti di un'applicazione. Nel presente progetto il pattern DAO è diviso per ogni tabella del database mysql, ognuno si occupa di tradurre la richiesta nel linguaggio di interrogazione del DB con le query apposite. Si interfacca con il Controller per accedere al database.
+
 #### Middleware
+
+
+
