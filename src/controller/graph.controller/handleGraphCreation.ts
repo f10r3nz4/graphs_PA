@@ -58,7 +58,7 @@ export const handleGraphCreation = async (req: Request, res: Response) => {
     //controllo che l'utente abbia abbastanza credito per creare il grafo
     const { userHaveEnoughTokens, cost } = doesUserHaveEnoughTokens({ oriented: oriented, links: links }, balance);
     if (!userHaveEnoughTokens) {
-        return res.status(400).json({
+        return res.status(401).json({
             message: 'You don\'n have enough tokens to create this graph'
         })
     }
