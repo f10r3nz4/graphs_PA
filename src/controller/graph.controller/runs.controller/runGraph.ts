@@ -8,6 +8,7 @@ import { daoUsers } from "../../dao/dao.users/dao.users";
 import { daoRuns } from "../../dao/dao.runs/dao.runs";
 import { daoLinks } from "../../dao/dao.links/dao.links";
 import {l1, l2} from '../../../heuristics/heuristics';
+import { createAndPopulateGraph } from "./createAndPopulateGraph";
 
 //calcola il percorso ottimo di un grafo tramite algoritmi a scelta
 export const runGraph = async (req: Request, res: Response) => {
@@ -43,10 +44,18 @@ export const runGraph = async (req: Request, res: Response) => {
     
     //recupera il grafo dal DB con ID
     const graph = await daoGraph.getGraphByID(idGraph);
-    //salvo il grafo e il costo dell'esecuzione
-    const { g, cost } = await createAndPopulateGraph(graph);
+    //salvo il grafo e il cost    const { g, cost } = await createAndPopulateGraph(graph);
+    const {g, cost} = await createAndPopulateGraph(graph);
     const isOriented = await daoGraph.orientationOfGraph(idGraph);
- 
+    const daoUser = new daoUsers();
+    const balanceOfUser = await daoUser.getBalance(user.email);
+    console.log(`Cost of algorithm: ${cost}`);
+    console.log(`Balance: ${balanceOfUser}`);
+    if(cost > balanceOfUser) {
+        return res.status(Code.BAD_REQUEST).json({
+            message: 'User does not have enough tokens to run this'
+        })
+    };
     const { path, optimalCost, time } = await runAlgorithm(g, algorithm, from, to, isOriented, heuristic);
 
     //salvo l'esecuzione nel DB associandola all'utente
@@ -82,34 +91,8 @@ export const runGraph = async (req: Request, res: Response) => {
     })
 }
 
-//il grafo alla creazione veniva solo salvato nel db, adesso con createGraph dalla libreria graph viene effettivamente creato
-const createAndPopulateGraph = async (graph: graphI) => {
-    
-    //creo il grafo e lo salvo nella costante
-    const g = createGraph();
-    //inizializzo il costo necessario alla creazione e quindi all'esecuzione
-    let cost = 0;
-
-    //aggiungo i nodi con il costo
-    graph.nodes.map((node) => {
-        console.log(`Added node: ${node.id}`);
-        g.addNode(`${node.id}`);
-        cost += 0.25;
-    })
-
-    //aggiungo gli archi con il costo
-    graph.links.map((link: any) => {
-        console.log(`Added link: from: ${link.node_from}, to: ${link.node_to}, weight: ${link.weight}`)
-        g.addLink(`${link.node_from}`, `${link.node_to}`, { weight: link.weight });
-        cost += 0.01;
-    })
 
 
-    return {
-        g: g,
-        cost: cost
-    };
-}
 
 //esecuzione del modello tramite algoritmo definito nella libreria graph.path
 const runAlgorithm = async (graph: Graph<any, any>, algorithm: String, from: String, to: String, isOriented: boolean, heuristic: number) => {

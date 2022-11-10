@@ -87,7 +87,7 @@ export const chargeToken = async (req: Request, res: Response) => {
     const loggedUser = (req as CustomRequest).user; //recupero l'utente loggato per controllarne il ruolo
     const receiver = req.body.email;
     const amount = req.body.amount;
-    const pool = connection();
+
     //controllo che l'utente loggato sia admin e abbia quindi i permessi per chiamare la funzione
     if(loggedUser.role !== 'admin') {
         return res.status(Code.UNAUTHORIZED).json({
@@ -114,12 +114,7 @@ export const chargeToken = async (req: Request, res: Response) => {
             message: 'This user does not exist'
         })
     }
-    //si effettua la query per aggiungere il credito all'utente nel DB
-    await pool.query(QUERY.ADD_TOKENS, [
-        amount,
-        receiver
-    ]);
-
+    
     return res.status(Code.OK).json({
         message: `Receiver: ${receiver} received: ${amount} tokens`
     }); 

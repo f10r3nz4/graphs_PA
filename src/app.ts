@@ -10,6 +10,7 @@ import { getNodes } from "./controller/graph.controller/getNodes";
 import { runGraph } from "./controller/graph.controller/runs.controller/runGraph";
 import { getRuns } from "./controller/graph.controller/runs.controller/getRuns";
 import { modifyWeight } from "./controller/graph.controller/modifyWeight";
+import { runSimulation } from "./controller/graph.controller/simulation.controller/runSimulation";
 
 //configurazione con il DB
 require('dotenv').config();
@@ -94,6 +95,11 @@ export class App {
         this.app.get('/runGraph',
             async (req: Request, res: Response, next: NextFunction) => await validateToken(req, res, next),
             (req: Request, res: Response) => runGraph(req, res)
+        )
+
+        this.app.post('/simulation', 
+        async (req: Request, res: Response, next: NextFunction) => await validateToken(req, res, next),
+            (req: Request, res: Response) => runSimulation(req,res)
         )
         
         //rotta canon -- restituisce le informazioni delle esecuzioni effettuate dell'utente autenticato
