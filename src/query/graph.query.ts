@@ -12,7 +12,7 @@ export const QUERY = {
     SELECT_ORIENTATION_GRAPH: 'SELECT (oriented) FROM GRAPH WHERE (id = ?)',
     CREATE_GRAPH: 'INSERT INTO GRAPH (users_email, oriented) VALUES(?, ?)',
     INSERT_NODE: 'INSERT INTO NODES (id,name, graph_id) VALUES (?,?,?)',
-    INSERT_LINK: 'INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUE (?,?,?,?,?)',
+    INSERT_LINK: 'INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES (?,?,?,?,?)',
     SELECT_NODE: 'SELECT * FROM NODES AS node WHERE (node.id = ? AND node.graph_id = ?)',
     COUNT_GRAPHS: 'SELECT COUNT(*) AS numberOfGraphs FROM GRAPH WHERE GRAPH.users_email = ?'
 }
