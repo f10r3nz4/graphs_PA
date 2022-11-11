@@ -1,6 +1,7 @@
 CREATE DATABASE IF NOT EXISTS usersdb;
 USE usersdb;
 
+-- Ad ogni caricamento del volume mysql elimino le tabelle preesistenti per evitare errori di sovrascrittura
 DROP TABLE IF EXISTS RUNS;
 DROP TABLE IF EXISTS LINK;
 DROP TABLE IF EXISTS NODES;
@@ -26,7 +27,7 @@ CREATE TABLE GRAPH (
     PRIMARY KEY (id)
 );
 
--- The id is `nameOfNode-graphID`
+-- L'ID è `nameOfNode-graphID`
 CREATE TABLE NODES (
     id VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
@@ -61,6 +62,90 @@ CREATE TABLE RUNS (
     PRIMARY KEY (id)
 );
 
+-- Inserisco tre utenti, due user (uno con token e uno senza per testare i controlli) e un admin
 INSERT INTO users (email, password, role, token) VALUES ('user@user1.it', 'user123', 'user', 10000);
 INSERT INTO users (email, password, role, token) VALUES ('user2@user2.it', 'user123', 'user', 0.0);
 INSERT INTO users (email, password, role, token) VALUES ('admin@user1.it', 'admin123', 'admin', 0.0);
+
+-- Inserisco due modelli più o meno complessi associati all'utente user@user1.it
+-- Grafo 1
+INSERT INTO GRAPH (users_email, oriented) VALUES ('user@user1.it', 1);
+INSERT INTO NODES (id, name, graph_id) VALUES ('Roma-1', 'Roma', 1);
+INSERT INTO NODES (id, name, graph_id) VALUES ('Milano-1', 'Milano', 1);
+INSERT INTO NODES (id, name, graph_id) VALUES ('Napoli-1', 'Napoli', 1);
+INSERT INTO NODES (id, name, graph_id) VALUES ('Torino-1', 'Torino', 1);
+INSERT INTO NODES (id, name, graph_id) VALUES ('Palermo-1', 'Palermo', 1);
+INSERT INTO NODES (id, name, graph_id) VALUES ('Venezia-1', 'Venezia', 1);
+INSERT INTO NODES (id, name, graph_id) VALUES ('Messina-1', 'Messina', 1);
+INSERT INTO NODES (id, name, graph_id) VALUES ('Padova-1', 'Padova', 1);
+INSERT INTO NODES (id, name, graph_id) VALUES ('Firenze-1', 'Firenze', 1);
+INSERT INTO NODES (id, name, graph_id) VALUES ('Taranto-1', 'Taranto', 1);
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Roma-Milano-1', 'Roma', 'Milano', 1, 571)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Roma-Napoli-1', 'Roma', 'Napoli', 1, 223)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Napoli-Milano-1', 'Napoli', 'Milano', 1, 771)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Milano-Messina-1', 'Milano', 'Messina', 1, 1244)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Messina-Palermo-1', 'Messina', 'Palermo', 1, 225)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Messina-Torino-1', 'Messina', 'Torino', 1, 1362)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Torino-Padova-1', 'Torino', 'Padova', 1, 369)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Padova-Venezia-1', 'Padova', 'Venezia', 1, 46)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Padova-Taranto-1', 'Padova', 'Taranto', 1, 864)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Venezia-Taranto-1', 'Venezia', 'Taranto', 1, 898)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Venezia-Firenze-1', 'Venezia', 'Firenze', 1, 271)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Firenze-Palermo-1', 'Firenze', 'Palermo', 1, 1169)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Palermo-Taranto-1', 'Palermo', 'Taranto', 1, 609)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Taranto-Roma-1', 'Taranto', 'Roma', 1, 331)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Roma-Firenze-1', 'Roma', 'Firenze', 1, 274)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Torino-Firenze-1', 'Torino', 'Firenze', 1, 434)
+-- Grafo 2
+INSERT INTO GRAPH (users_email, oriented) VALUES ('user@user1.it', 1);
+INSERT INTO NODES (id, name, graph_id) VALUES ('A-2', 'A', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('B-2', 'B', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('C-2', 'C', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('D-2', 'D', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('E-2', 'E', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('F-2', 'F', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('G-2', 'G', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('H-2', 'H', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('I-2', 'I', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('L-2', 'L', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('M-2', 'M', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('N-2', 'N', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('O-2', 'O', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('P-2', 'P', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('Q-2', 'Q', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('R-2', 'R', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('S-2', 'S', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('T-2', 'T', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('U-2', 'U', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('V-2', 'V', 2);
+INSERT INTO NODES (id, name, graph_id) VALUES ('Z-2', 'Z', 2);
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('A-B-2', 'A', 'B', 2, 9)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('B-C-2', 'B', 'C', 2, 6)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('C-D-2', 'C', 'D', 2, 3)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('C-E-2', 'C', 'E', 2, 8)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('D-E-2', 'D', 'E', 2, 5)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('E-B-2', 'E', 'B', 2, 2)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('E-A-2', 'E', 'A', 2, 1)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('E-F-2', 'E', 'F', 2, 4)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('F-G-2', 'F', 'G', 2, 7)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('F-C-2', 'F', 'C', 2, 8)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('G-H-2', 'G', 'H', 2, 9)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('H-I-2', 'H', 'I', 2, 5)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('I-L-2', 'I', 'L', 2, 2)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('I-G-2', 'I', 'G', 2, 3)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('L-M-2', 'L', 'M', 2, 4)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('M-H-2', 'M', 'H', 2, 7)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('H-N-2', 'H', 'N', 2, 6)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('H-O-2', 'H', 'O', 2, 4)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('O-P-2', 'O', 'P', 2, 5)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('P-N-2', 'P', 'N', 2, 6)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('N-Q-2', 'N', 'Q', 2, 3)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Q-R-2', 'Q', 'R', 2, 2)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('R-S-2', 'R', 'S', 2, 1)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('S-T-2', 'S', 'T', 2, 7)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('S-U-2', 'S', 'U', 2, 8)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('U-T-2', 'U', 'T', 2, 9)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('T-V-2', 'T', 'V', 2, 5)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('V-U-2', 'V', 'U', 2, 2)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('V-Z-2', 'V', 'Z', 2, 8)
+INSERT INTO LINK (id, node_from, node_to, graph_id, weight) VALUES ('Z-M-2', 'Z', 'M', 2, 3)
