@@ -4,7 +4,7 @@ export const QUERY = {
     SELECT_NODES: 'SELECT * FROM NODES',
     SELECT_NODE_FROM_GRAPH: 'SELECT * FROM NODES JOIN GRAPH ON NODES.graph_id = GRAPH.id WHERE (GRAPH.id = ? AND NODES.name = ?)',
     SELECT_LINKS_FROM_GRAPH: 'SELECT * FROM LINK AS link WHERE link.graph_id = ?',
-    SELECT_LINK: 'SELECT * FROM LINK WHERE (LINK.node_from = ? AND LINK.node_to)',
+    SELECT_LINK: 'SELECT * FROM LINK WHERE LINK.node_from = ? AND LINK.node_to = ?',
     SELECT_GRAPH_BY_ID: 'SELECT * FROM GRAPH as graph WHERE graph.id = ?',
     SELECT_WEIGHT_OF_LINK: 'SELECT (weight) FROM LINK WHERE (node_to = ? AND node_from = ?)',
     SELECT_WEIGHT_OF_LINK_BY_ID: 'SELECT (weight) FROM LINK WHERE (id = ?)',

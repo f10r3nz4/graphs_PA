@@ -26,7 +26,7 @@ services:
     image: nodeimage:v1
     environment:
       DB_HOST: mysqldb
-      DB_PASSWORD: 'Val12345-%'
+      DB_PASSWORD: Val12345-%
       DB_NAME: usersdb
       DB_PORT: 3306
       DB_CONNECTION_LIMIT: 10

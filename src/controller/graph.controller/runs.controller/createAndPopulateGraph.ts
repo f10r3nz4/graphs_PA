@@ -27,6 +27,6 @@ export const createAndPopulateGraph = async (graph: graphI) => {
 
     return {
         g: g,
-        cost: cost
+        cost: parseFloat(cost.toFixed(2)) 
     };
 }

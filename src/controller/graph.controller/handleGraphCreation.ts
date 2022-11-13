@@ -22,35 +22,6 @@ export const handleGraphCreation = async (req: Request, res: Response) => {
     const daoForLinks: daoLinks = new daoLinks();
     const daoForUser: daoUsers = new daoUsers();
 
-    if (email === undefined) {
-        return res.status(Code.BAD_REQUEST).json({
-            message: 'No email found'
-        });
-    }
-
-    if (balance === undefined) {
-        return res.status(Code.BAD_REQUEST).json({
-            message: 'Balance was undefined'
-        });
-    }
-
-    if (links === undefined) {
-        return res.status(Code.BAD_REQUEST).json({
-            message: 'Body is missing'
-        });
-    }
-
-    if (links === undefined) {
-        return res.status(Code.BAD_REQUEST).json({
-            message: 'Please specify your links'
-        });
-    }
-
-    if (links.length < 1) {
-        return res.status(Code.BAD_REQUEST).json({
-            message: 'Please provide at least one link'
-        });
-    }
     //si setta l'orientamento del grafo come non orientato di default
     if (oriented === undefined) {
         oriented = false;

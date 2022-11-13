@@ -20,28 +20,7 @@ export const runGraph = async (req: Request, res: Response) => {
     //l'utente inserisce il nome del nodo di partenza e arrivo per l'algoritmo e viene trasformato in nome nodo+id grafo per indicare l'id del nodo
     let from = `${(req.body.from as String)}-${idGraph}`;
     let to = `${(req.body.to as String)}-${idGraph}`;
-    const availableAlgos = ['astar', 'agreedy', 'nba']; //salvo i nomi degli algoritmi possibili in una costante
 
-    if (from === undefined || to === undefined) {
-        return res.status(Code.BAD_REQUEST).json({
-            message: 'Please specify a starting point and a goal'
-        });
-    }
-
-    console.log(`FROM: ${from}`, to);
-
-    if (idGraph === undefined || idGraph <= 0) {
-        return res.status(Code.BAD_REQUEST).json({
-            message: 'Graph ID parameter is undefined or invalid'
-        });
-    }
-
-    if (algorithm === undefined || !availableAlgos.includes(algorithm.toLowerCase())) {
-        return res.status(Code.BAD_REQUEST).json({
-            message: 'This algorithm is not available'
-        });
-    }
-    
     //recupera il grafo dal DB con ID
     const graph = await daoGraph.getGraphByID(idGraph);
     //salvo il grafo e il cost    const { g, cost } = await createAndPopulateGraph(graph);
@@ -95,7 +74,7 @@ export const runGraph = async (req: Request, res: Response) => {
 
 
 //esecuzione del modello tramite algoritmo definito nella libreria graph.path
-const runAlgorithm = async (graph: Graph<any, any>, algorithm: String, from: String, to: String, isOriented: boolean, heuristic: number) => {
+export const runAlgorithm = async (graph: Graph<any, any>, algorithm: String, from: String, to: String, isOriented: boolean, heuristic: number) => {
     let path, pathfinder;
     
     //l'utente indica uno dei tre algoritmi e indica anche l'euristica da usare, norma 1 o norma 2
@@ -155,9 +134,10 @@ const runAlgorithm = async (graph: Graph<any, any>, algorithm: String, from: Str
     let time;
     if (pathfinder !== undefined) {
         const startTimer = new Date().getMilliseconds();
+        
         path = pathfinder.find(from as NodeId, to as NodeId);
+        
         const endTimer = new Date().getMilliseconds();
-        console.log(startTimer, endTimer)
         time = endTimer - startTimer;
     }
     //salvo in una costante il costo del percorso
@@ -174,6 +154,7 @@ const getCostOfRun = async (path: any): Promise<number> => {
     const daoLink = new daoLinks();
     //inizializzo il costo del percorso a 0
     let costOfRun = 0;
+    
     for (let i = 0; i < path.length - 1; i++) {
         const nodeFrom = path[i].id;
         const nodeTo = path[i + 1].id
@@ -183,6 +164,7 @@ const getCostOfRun = async (path: any): Promise<number> => {
             nodeTo
         )
         costOfRun += weightOfLink;
+        
     }
     return costOfRun;
 }

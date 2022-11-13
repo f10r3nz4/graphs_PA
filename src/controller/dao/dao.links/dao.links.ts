@@ -47,6 +47,7 @@ export class daoLinks {
                 from,
                 to
             ]);
+            
             if ((rs[0] as LinkI[]).length !== 0) {
                 linkFound = true;
             }

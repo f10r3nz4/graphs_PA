@@ -1,25 +1,28 @@
 import { Request, Response } from "express";
 import { Code } from "../../enum/code.enum";
-import { CustomRequest } from "../../interface/user";
 import { daoLinks } from "../dao/dao.links/dao.links";
 
 //permette all'utente di modificare il peso di un arco
 export const modifyWeight = async (req: Request, res: Response) => {
-    const email = (req as CustomRequest).user.email;
     //dal corpo della richiesta si prende il nuovo peso e l'arco relativo
     const newWeightRequested = req.body.newWeight;
-    const idLink = req.body.link;
+    const idLink = req.body.link as String;
+    const daolinks = new daoLinks();
 
-    //il nuovo peso deve essere un numero intero positivo
-    if (newWeightRequested < 0) {
+    const idSplitted = idLink.trim().split("-");
+    const idGraph = idSplitted[2];
+    
+    const isLinkValid = await daolinks.linkExists(`${idSplitted[0]}-${idGraph}`, `${idSplitted[1]}-${idGraph}`);
+
+    if(!isLinkValid) {
         return res.status(Code.BAD_REQUEST).json({
-            message: 'Please specify a valid weight'
+            message: 'Link not found'
         })
     }
     //richiamo la funzione che calcola il nuovo peso
     const { newWeight, old } = await calculateNewWeight(newWeightRequested, idLink)
 
-    return res.status(200).json({
+    return res.status(Code.OK).json({
         newWeight: newWeight,
         old: old
     })
@@ -41,7 +44,6 @@ const calculateNewWeight = async (newWeight: number, idLink: String) => {
     const newWeightCalculated = alpha * oldWeight + (1 - alpha) * newWeight;
     console.log(`Old weight: ${oldWeight}, new weight: ${newWeightCalculated}`);
 
-    console.log(newWeightCalculated)
     //passo il peso aggiornato
     await daoLink.updateWeightOfLink(idLink, newWeightCalculated)
 

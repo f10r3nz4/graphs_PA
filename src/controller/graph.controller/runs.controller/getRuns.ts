@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { Code } from "../../../enum/code.enum";
-import { CustomRequest } from "../../../interface/user";
 import { daoRuns } from "../../dao/dao.runs/dao.runs";
 
 //restituisce tutte le esecuzioni salvate nel DB tramite DAO
