@@ -9,6 +9,7 @@ import { Code } from "../../../enum/code.enum";
 import { Graph, Node, NodeId } from "ngraph.graph";
 import { runAlgorithm } from "../runs.controller/runGraph";
 
+//interfaccia che definisce il risultato 
 interface results {
     optimalCost: number,
     time: number,
@@ -18,7 +19,7 @@ interface results {
     weight: number
 }
 
-// The check on the input will be done in a middleware
+//eseguo la simulazione salvando tutte le informazioni interessanti nella costante
 export const runSimulation = async (req: Request, res: Response) => {
     const user = (req as CustomRequest).user;
     const nodeFrom = req.body.from as String;
@@ -42,9 +43,11 @@ export const runSimulation = async (req: Request, res: Response) => {
 
     let from = `${nodeFrom}-${idGraph}`;
     let to = `${(nodeTo)}-${idGraph}`;
-
+    
+    //recupero il grafo dal DB, lo creo con le funzioni della libreria ngraph richiamando il run controller
     const graph = await daoG.getGraphByID(idGraph);
     const { g, cost } = await createAndPopulateGraph(graph);
+    //recupero le informazioni sull'utente per controllare il credito
     const daoUser = new daoUsers();
     const balanceOfUser = await daoUser.getBalance(user.email);
     const isOriented = await daoG.orientationOfGraph(idGraph);
@@ -54,8 +57,11 @@ export const runSimulation = async (req: Request, res: Response) => {
         })
     };
 
+    //controllo sul range accettabile per la simulazione e si esegue l'algorimo richiesto prendendo la funzione da runGraph
+    //utilizzo del while per una esecuzione iterativa
     while (startingValue <= endingValue) {
         const { path, optimalCost, time } = await runAlgorithm(g, algorithm, from, to, isOriented, heuristic);
+        //tutti i risultati vengono salvati nella variabile
         const resultObtained= { 
             optimalCost: optimalCost,
             time: time as number,
@@ -64,10 +70,12 @@ export const runSimulation = async (req: Request, res: Response) => {
             endRange: endingValue,
             weight: startingValue
         }
+        //tra tutti i risultati ottenuti si sceglie quello con il costo ottimale migliore (il più basso)
         if (bestResult.optimalCost < optimalCost) {
             bestResult = resultObtained;
         }
-
+        
+        //aggiorno il peso del link eliminandolo e reinserendolo con il nuovo peso
         results.push(resultObtained)
         console.log(`Optimal cost: ${optimalCost}, time: ${time}`);
         g.forEachLinkedNode(nodeFrom as NodeId, function (linkedNode, link) {
