@@ -24,7 +24,8 @@ export const createAndPopulateGraph = async (graph: graphI) => {
         cost += 0.01;
     })
 
-
+//restituisco il costo castato in float in quanto in TS i float hanno un arrotondamento a più valori
+//dopo la virgola e non è una rappresentazione adatta al risultato dell'endpoint
     return {
         g: g,
         cost: parseFloat(cost.toFixed(2)) 
