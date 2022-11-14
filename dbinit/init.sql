@@ -65,8 +65,8 @@ INSERT INTO users (email, password, role, token) VALUES ('user@user1.it', 'user1
 INSERT INTO users (email, password, role, token) VALUES ('user2@user2.it', 'user123', 'user', 0.0);
 INSERT INTO users (email, password, role, token) VALUES ('admin@user1.it', 'admin123', 'admin', 0.0);
 
---Inserimento di due modelli più o meno complessi assegnati all'utente user@user1.it
---Grafo con ID 1 (non orientato)
+-- Inserimento di due modelli più o meno complessi assegnati all'utente user@user1.it
+-- Grafo con ID 1 (non orientato)
 INSERT INTO GRAPH (users_email, oriented) VALUES ('user@user1.it', 0);
 INSERT INTO NODES (id, name, graph_id) VALUES ('Roma-1', 'Roma', 1);
 INSERT INTO NODES (id, name, graph_id) VALUES ('Milano-1', 'Milano', 1);
