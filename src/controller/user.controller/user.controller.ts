@@ -4,6 +4,7 @@ import { CustomRequest, User } from "../../interface/user";
 import { QUERY } from "../../query/user.query";
 import { Code } from "../../enum/code.enum";
 import { Status } from "../../enum/status.enum";
+import { daoUsers } from "../dao/dao.users/dao.users";
 import { FieldPacket, OkPacket, ResultSetHeader, RowDataPacket } from "mysql2";
 import jwt from 'jsonwebtoken';
 import { ResultSet } from "../../types/ResultSet";
@@ -51,6 +52,7 @@ export const handleLogin = async (req: Request, res: Response) => {
     const result: ResultSet = await pool.query(QUERY.SELECT_USER, [email]);
     const userData = result[0] as User;
     const option = { expiresIn: '1h' }
+    const daoForUser: daoUsers = new daoUsers();
     
 
     if (password !== (userData[0] as User).password as String) {
@@ -84,7 +86,7 @@ export const chargeToken = async (req: Request, res: Response) => {
             message: 'This user does not exist'
         })
     }
-    
+    await daoForUser.addTokens(receiver, amount);
     return res.status(Code.OK).json({
         message: `Receiver: ${receiver} received: ${amount} tokens`
     }); 
