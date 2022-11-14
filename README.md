@@ -9,6 +9,14 @@ Una ultima funzionalità è quella della simulazione che permette all'utente di 
 
 La specifica completa del progetto è consultabile in questo [documento](https://github.com/f10r3nz4/graphs_PA/blob/main/specifiche.pdf).
 
+## Strumenti e Librerie
+
+- [NodeJS](https://nodejs.org/en/)
+- [npm ngraph.graph](https://www.npmjs.com/package/ngraph.graph)
+- [npm ngraph.path](https://www.npmjs.com/package/ngraph.path)
+- [VS Code](https://code.visualstudio.com/)
+- [JSON Web Token](https://jwt.io/)
+
 ## Installazione
 ### Requisiti:
 - [Docker](https://www.docker.com/) per l'installazione
@@ -31,7 +39,7 @@ docker-compose up --build
   
 *NB* Se si utilizza un SO Windows si consiglia di utilizzare la WSL onde evitare errori di decoding dei volumi 
   
-3. In un altra finestra, dopo l'esecuzione, posizionarsi sulla cartella graph_PA e lanciare:
+3. In un altra finestra del terminale, dopo l'esecuzione, posizionarsi sulla cartella graph_PA e lanciare:
 ```
 docker exec -i mysqlcontainer mysql -uroot -pVal12345-% usersdb < ./dbinit/init.sql
 ```
@@ -40,6 +48,7 @@ docker exec -i mysqlcontainer mysql -uroot -pVal12345-% usersdb < ./dbinit/init.
 ```
 http://localhost:3000/
   ```
+*NB* Per le rotte per cui è prevista l'autenticazione, dopo aver effettuato il login, il token generato va inserito in Header Authorization
 
 ## Database
 
@@ -63,7 +72,7 @@ ruolo:    admin
 
 I modelli sono:
 
-Grafo con ID 1 ha 10 nodi e 16 archi, orientato, associato all'utente user@user1.it.
+Grafo con ID 1 ha 10 nodi e 16 archi, non orientato, associato all'utente user@user1.it.
 
 Grafo con ID 2 ha 21 nodi e 30 archi, orientato, associato all'utente user@user1.it.
 
@@ -183,11 +192,20 @@ Esempio:
 - Autenticazione JWT: Sì
 - Formato risposta:  ``` application/json ```
 - Body:
- - ```  ```,
-- Descrizione:
+ - ``` from ```, nome del nodo di partenza (se grafo orientato) del link da modificare
+ - ``` to ```, nome del nodo di arrivo (se grafo orientato) del link da modificare
+ - ``` startingValue ```, peso di partenza
+ - ``` endingValue ```, peso di fine
+ - ``` increment ```, passo di incremento per ogni iterazione
+ - ``` algorithm ```, nome dell'algoritmo da usare tra astar, agreedt e nba
+ - ``` idGraph ```, ID del modello
+ - ``` heuristic ```, numero dell'euristica, 1 norma 1 o 2 norma 2
+- Descrizione: l'utente autenticato, indicando il grafo da utilizzare, il link da modificare, un peso di partenza e un peso di fine, un passo di incremento, l'algoritmo e l'euristica da utilizzare, esegue una simulazione che calcola in modo iterativo il peso migliore sul link perchè il costo sia ottimo secondo l'algoritmo usato
+
 Esempio:
 
-![esempio simulation](?raw=true)
+![esempio simulation](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/simulation%20req.png?raw=true)
+![esempio simulation](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/simulation%20res.png?raw=true)
 
 
 ## Progettazione
@@ -203,7 +221,7 @@ Esempio:
 | /graph/modifyWeight | POST   | l'utente, indicando grafo e arco può modificarne il peso                           | admin o user | SI                 |
 | /runGraph           | GET    | l'utente esegue il modello indicando algoritmo, euristica e nodo di inizio e fine  | admin o user | SI                 |
 | /runs               | GET    | l'utente visualizza tutte le esecuzioni da lui effettuate                          | admin o user | SI                 |
-| /simulation         | GET    | l'utente indicando peso di inizio e fine può trovare la soluzione ottima in modo iterativo | admin o user | SI                 |
+| /simulation         | GET    | l'utente, indicando peso di inizio e fine ed un passo di incremento, può trovare la soluzione ottima in modo iterativo | admin o user | SI                 |
 
 ### Diagrammi UML
 
@@ -279,13 +297,16 @@ Esempio:
 #### MVC
 
 Pattern Model-View-Controller utilizzato per dividere il codice in blocchi di funzionalità distinte. Nel presente la componente View non è stataa inserita in quanto non richiesta, quindi il pattern diventa Model - Controller.
-- *Controller*, composto da "user" e "graph" che gestiscono rispettivamente l'utente e il modello. Riceve i comandi e reagisce eseguendo le operazioni richieste restituendo un risultato JSON.
-- *Model*, si interfaccia con la base di dati, ne astrae le infomrazioni in modo che possano essere manipolate dal Controller.
+- *Controller*, composto da "user" e "graph" che gestiscono rispettivamente l'utente e il modello. Riceve i comandi e reagisce eseguendo le operazioni richieste restituendo un risultato JSON. Il primo gestisce tutto quello che riguarda l'inserimento del credito e il recupero delle informazioni dell'utente. Il secondo gestisce ogni funzione collegata al grafo, dall'esecuzione del modello alla simulazione e al cambio dei pesi, oltre a restituire le informazioni relative a nodi e archi.
+- *Model*, si interfaccia con la base di dati, ne astrae le infomrazioni in modo che possano essere manipolate dal Controller. Il model in questo caso viene implementato tramite il DAO che funge da ponte tra il controller e la base di dati contenente le informazioni di interesse.
 
 #### DAO
 
-Pattern DAO per la gestione della persistenza, utilizzato per il mantenimento di una rigida separazione tra le componenti di un'applicazione. Nel presente progetto il pattern DAO è diviso per ogni tabella del database mysql, ognuno si occupa di tradurre la richiesta nel linguaggio di interrogazione del DB con le query apposite, sono presenti DAO per gli archi, i nodi, i grafi, le esecuzioni e gli utenti. Si interfacca con il Controller per accedere al database ed è usato per separare la logica di business dalla logica di acceso ai dati.
+Pattern DAO per la gestione della persistenza, utilizzato per il mantenimento di una rigida separazione tra le componenti di un'applicazione. Si interfacca con il Controller per accedere al database ed è usato per separare la logica di business dalla logica di acceso ai dati. Nel presente progetto il pattern DAO è diviso per ogni tabella del database mysql, ognuno si occupa di tradurre la richiesta nel linguaggio di interrogazione del DB con le query apposite, sono presenti DAO per gli archi, i nodi, i grafi, le esecuzioni e gli utenti. Le query si trovano nell'omonima cartella e sono divise per utente, grafo ed esecuzione, vengono salvate in una costante che poi viene esportata e richiamata al bisogno nei DAO.
 
 #### Middleware
 
+
+
+### Sicurezze Privacy
 
