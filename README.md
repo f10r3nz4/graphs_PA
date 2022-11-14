@@ -140,6 +140,7 @@ Esempio:
 *NB*: la rotta ``` /graph ``` è una rotta di test che può essere chiamata con autenticazione per restituire tutti i modelli creati dall'utente
 
 Esempio:
+
 ![esempio graph/filter](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/Schermata%202022-11-10%20alle%208.07.35%20PM.png?raw=true)
 
 ### /graphs/modifyWeight
@@ -153,6 +154,7 @@ Esempio:
 - Descrizione: l'utente, specificando l'id di uno specifico arco, può modificarne il peso
 
 Esempio:
+
 ![esempio graph/filter](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/Schermata%202022-11-10%20alle%208.07.35%20PM.png?raw=true)
 
 ### /runGraph
@@ -227,70 +229,65 @@ Esempio:
 
 #### Caso d'Uso
 
-![caso d'uso UML](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-UML%20users.drawio.png)
+![caso d'uso UML](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/caso%20d'uso.png?raw_true)
 
 #### Diagrammi di Sequenza
 
 ***/login SUCCESS:***
 
-![login success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-login-success.drawio.png?raw=true)
+![login success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/login%20success.png?raw=true)
 
 ***/login ERROR:***
 
-![login error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-login-error-unauth.drawio.png?raw=true)
-![login error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-login-error-internalservererror.drawio.png?raw=true)
-![login error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-login-error-badreq.drawio.png?raw=true)
+![login error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/login%20error.png?raw=true)
 
 ***/chargeTokens SUCCESS:***
 
-![chargetokens success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/Diagramma%20senza%20titolo-chargeToken-success.drawio.png?raw=true)
-
-***/chargeTokens ERROR:***
-
-![chargetokens error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-chargeToken-unauth.drawio.png?raw=true)
-![chargetokens error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-chargeToken-badrequst.drawio.png?raw=true)
+![chargetokens success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/chargetoken%20success.png?raw=true)
 
 ***/createGraph SUCCESS:***
 
-![creategraph success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-creategraph-success.drawio.png?raw=true)
+![creategraph success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/createGraph%20success.png?raw=true)
 
 ***/createGraph ERROR:***
 
-![chargetokens error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-creategraph-error-.nottoken.drawio.png?raw=true)
-![chargetokens error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-creategraph-error.drawio.png?raw=true)
+![chargetokens error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/creategraph%20error.png?raw=true))
 
 ***/graph/filter SUCCESS:***
 
-![graphfilter success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-graphs_filter%20success.drawio.png?raw=true)
+![graphfilter success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/filter%20success.png?raw=true)
 
 ***/graph/filter ERROR:***
 
-![graphfilter error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-graphs_filter%20error.drawio.png?raw=true)
+![graphfilter error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/filter%20error.png?raw=true)
 
 ***/graph/modifyWeight SUCCESS:***
 
-![graphmodifyweight success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-graphs_modifyWeight%C3%B9.drawio.png?raw=true)
+![graphmodifyweight success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/modifyweight%20success.png?raw=true)
 
 ***/graph/modifyWeight ERROR:***
 
-![graphmodifyweight error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/Diagramma%20senza%20titolo-graphs_modifyWeight%20error.drawio.png?raw=true)
+![graphmodifyweight error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/modifyweight%20error.png?raw=true)
 
 ***/runGraph SUCCESS:***
 
-![rungraph success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/Diagramma%20senza%20titolo-_runGraph.drawio.png?raw=true)
+![rungraph success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/rungraph%20success.png?raw=true)
 
 ***/runGraph ERROR:***
 
-![rungraph error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-_runGraph%20badreq.drawio.png?raw=true)
-![rungraph error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-_runGraph%20error.drawio.png?raw=true)
+![rungraph error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/rungraph%20error.png?raw=true)
 
 ***/runs SUCCESS:***
 
-![runs success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/uml-chargeToken-badrequst-_runs.drawio.png?raw=true)
+![runs success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/runs.png?raw=true)
 
 ***/simulation SUCCESS:***
 
+![simulation success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/simulation%20success.png?raw=true)
+
 ***/simulation ERROR:***
+
+![simulation error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/simulation%20error.png?raw=true)
 
 ### Pattern
 
