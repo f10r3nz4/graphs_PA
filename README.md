@@ -48,7 +48,7 @@ docker exec -i mysqlcontainer mysql -uroot -pVal12345-% usersdb < ./dbinit/init.
 ```
 http://localhost:3000/
   ```
-*NB* Per le rotte per cui è prevista l'autenticazione, dopo aver effettuato il login, il token generato va inserito in Header Authorization
+*NB* Per le rotte per cui è prevista l'autenticazione, dopo aver effettuato il login, il token generato va inserito in Header Authorization, questo ha una durata di validità di un'ora
 
 ## Database
 
@@ -300,13 +300,18 @@ Pattern Model-View-Controller utilizzato per dividere il codice in blocchi di fu
 - *Controller*, composto da "user" e "graph" che gestiscono rispettivamente l'utente e il modello. Riceve i comandi e reagisce eseguendo le operazioni richieste restituendo un risultato JSON. Il primo gestisce tutto quello che riguarda l'inserimento del credito e il recupero delle informazioni dell'utente. Il secondo gestisce ogni funzione collegata al grafo, dall'esecuzione del modello alla simulazione e al cambio dei pesi, oltre a restituire le informazioni relative a nodi e archi.
 - *Model*, si interfaccia con la base di dati, ne astrae le infomrazioni in modo che possano essere manipolate dal Controller. Il model in questo caso viene implementato tramite il DAO che funge da ponte tra il controller e la base di dati contenente le informazioni di interesse.
 
+L'utilizzo di questo pattern si è ritenuto necessario perchè permette di implementare un servizio in maniera veloce e supporta le funzioni asincrone.
+
 #### DAO
 
 Pattern DAO per la gestione della persistenza, utilizzato per il mantenimento di una rigida separazione tra le componenti di un'applicazione. Si interfacca con il Controller per accedere al database ed è usato per separare la logica di business dalla logica di acceso ai dati. Nel presente progetto il pattern DAO è diviso per ogni tabella del database mysql, ognuno si occupa di tradurre la richiesta nel linguaggio di interrogazione del DB con le query apposite, sono presenti DAO per gli archi, i nodi, i grafi, le esecuzioni e gli utenti. Le query si trovano nell'omonima cartella e sono divise per utente, grafo ed esecuzione, vengono salvate in una costante che poi viene esportata e richiamata al bisogno nei DAO.
 
+Questo pattern è stato utilizzato per interfacciarsi in maniera efficace con il database ed avere quindi uno strato intermedio tra il controller che manipola i dati nelle funzioni ed i dati stessi, senza dover richiamare direttamente la query necessaria.
+
 #### Middleware
 
+Per middleware si intende il software che rende accessibile sul Web risorse hardware o software che prima erano disponibili solo localmente o su reti non Internet. Al termine di ogni middleware questo richiama next() che invoca l'eventuale middleware successivo che si trova in catena. Nel presente progetto i middleware vengono utilizzati per effettuare controlli sugli input params o body e per controllare la validità dei token JWT nelle rotte dove è richiesta l'autenticazione.
 
+### Sicurezza e Privacy
 
-### Sicurezze Privacy
-
+Nel presente progetto vi sono alcuni documenti ed informazioni sensibili che normalmente non vengono esposti in chiaro per ragioni di sicurezza informatica e tutela della privacy dell'utente. Tra questi dati vi sono sicuramente la chiave generatrice del token JWT per l'autenticazione e le password degli utenti. Il token JWT viene salvato nel file .env che contiene le variabili d'ambiente del progetto e non viene condiviso insieme al codice, in questo caso è stato fornito per agevolare l'istallazione e include oltre al JWT anche le credenziali ed il nome del DB e la variabile alpha di default usata nell'endpoint del cambio peso. Nel database, inoltre, le password vengono salvate in chiaro come stringhe proprio per facilitare la fase di test e non appesantire l'API.
