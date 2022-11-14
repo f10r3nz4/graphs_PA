@@ -52,7 +52,7 @@ export const handleLogin = async (req: Request, res: Response) => {
     const result: ResultSet = await pool.query(QUERY.SELECT_USER, [email]);
     const userData = result[0] as User;
     const option = { expiresIn: '1h' }
-    const daoForUser: daoUsers = new daoUsers();
+    
     
 
     if (password !== (userData[0] as User).password as String) {
@@ -77,6 +77,7 @@ export const handleLogin = async (req: Request, res: Response) => {
 export const chargeToken = async (req: Request, res: Response) => {
     const receiver = req.body.email;
     const amount = req.body.amount;
+    const daoForUser: daoUsers = new daoUsers();
 
     //recupero l'utente
     const user = await getUserByEmail(receiver);
@@ -86,7 +87,7 @@ export const chargeToken = async (req: Request, res: Response) => {
             message: 'This user does not exist'
         })
     }
-    await daoForUser.addTokens(receiver, amount);
+    await daoForUser.addTokens(amount, receiver);
     return res.status(Code.OK).json({
         message: `Receiver: ${receiver} received: ${amount} tokens`
     }); 
