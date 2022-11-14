@@ -48,7 +48,7 @@ export class App {
             (req: Request, res: Response) => getUsers(req, res)
         );
 
-        //rotta test -- restituisce l'utente fornendo l'email
+        //rotta test -- restituisce l'utente fornendo l'email con autenticazione
         this.app.get('/getUser',
             [validateToken],
             async (req: Request, res: Response) => await getUser(req, res)
@@ -71,7 +71,7 @@ export class App {
             (req: Request, res: Response) => handleGraphCreation(req, res)
         )
 
-        //rotta test -- restituisce tutti i grafi presenti nel DB
+        //rotta test -- restituisce tutti i grafi presenti nel DB con autorizzazione
         this.app.get('/graphs',
             [validateToken],
             (req: Request, res: Response) => getGraphs(req, res)
@@ -100,6 +100,7 @@ export class App {
             (req: Request, res: Response) => runGraph(req, res)
         )
 
+        //rotta canoc -- esegue una simulazione sulla modifica del peso di un link in modo iterativo
         this.app.post('/simulation',
             [validateToken, checkValidAlgorithm, checkRange, checkNodeFrom, checkNodeTo, checkIncrement, checkValidIDGraph],
             (req: Request, res: Response) => runSimulation(req, res)
