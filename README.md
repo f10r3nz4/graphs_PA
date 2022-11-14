@@ -194,14 +194,14 @@ Esempio:
 - Autenticazione JWT: Sì
 - Formato risposta:  ``` application/json ```
 - Body:
- - ``` from ```, nome del nodo di partenza (se grafo orientato) del link da modificare
- - ``` to ```, nome del nodo di arrivo (se grafo orientato) del link da modificare
- - ``` startingValue ```, peso di partenza
- - ``` endingValue ```, peso di fine
- - ``` increment ```, passo di incremento per ogni iterazione
- - ``` algorithm ```, nome dell'algoritmo da usare tra astar, agreedt e nba
- - ``` idGraph ```, ID del modello
- - ``` heuristic ```, numero dell'euristica, 1 norma 1 o 2 norma 2
+  - ``` from ```, nome del nodo di partenza (se grafo orientato) del link da modificare
+  - ``` to ```, nome del nodo di arrivo (se grafo orientato) del link da modificare
+  - ``` startingValue ```, peso di partenza
+  - ``` endingValue ```, peso di fine
+  - ``` increment ```, passo di incremento per ogni iterazione
+  - ``` algorithm ```, nome dell'algoritmo da usare tra astar, agreedt e nba
+  - ``` idGraph ```, ID del modello
+  - ``` heuristic ```, numero dell'euristica, 1 norma 1 o 2 norma 2
 - Descrizione: l'utente autenticato, indicando il grafo da utilizzare, il link da modificare, un peso di partenza e un peso di fine, un passo di incremento, l'algoritmo e l'euristica da utilizzare, esegue una simulazione che calcola in modo iterativo il peso migliore sul link perchè il costo sia ottimo secondo l'algoritmo usato
 
 Esempio:
