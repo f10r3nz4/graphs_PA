@@ -3,6 +3,7 @@ import { Code } from '../enum/code.enum';
 import { LinkI } from '../interface/graph';
 import { CustomRequest } from '../interface/user';
 
+//controllo sul nome dell'algoritmo indicato in fase di run del modello
 export const checkValidAlgorithm = async (req: Request, res: Response, next: NextFunction) => {
     const availableAlgos = ['astar', 'agreedy', 'nba']; //salvo i nomi degli algoritmi possibili in una costante
     const algorithm = req.body.algorithm;
@@ -15,7 +16,8 @@ export const checkValidAlgorithm = async (req: Request, res: Response, next: Nex
     }
 }
 
-//TODO: if there's enough time add the regural expression check
+//controllo sull'inserimento dell'email passato come parametro (caso presente nel login)
+//deve essere una mail assegnata ad un utente e non deve essere vuoto
 export const checkValidEmailParam = async (req: Request, res: Response, next: NextFunction) => {
     if (req.query.email === undefined || !validateEmail(req.query.email as String)) {
         return res.status(Code.BAD_REQUEST).json({
@@ -26,6 +28,8 @@ export const checkValidEmailParam = async (req: Request, res: Response, next: Ne
     }
 }
 
+//controllo sull'inserimento dell'email passato come boy
+//deve essere una mail assegnata ad un utente e non deve essere vuoto
 export const checkValidEmailBody = async (req: Request, res: Response, next: NextFunction) => {
     if (req.body.email === undefined || !validateEmail(req.body.email as String)) {
         return res.status(Code.BAD_REQUEST).json({
@@ -36,7 +40,9 @@ export const checkValidEmailBody = async (req: Request, res: Response, next: Nex
     }
 }
 
+//controllo sul credito da assegnare all'utente
 export const checkValidAmountBody = async (req: Request, res: Response, next: NextFunction) => {
+    //deve essere un tipo numerico definito e positivo
     if (req.body.amount === undefined || req.body.amount < 0 || typeof req.body.amount === 'string') {
         return res.status(Code.BAD_REQUEST).json({
             message: 'Specify a valid amount'
@@ -46,7 +52,7 @@ export const checkValidAmountBody = async (req: Request, res: Response, next: Ne
     }
 }
 
-//controllo che l'utente loggato sia admin e abbia quindi i permessi per chiamare la funzione
+//controllo che l'utente loggato sia admin e abbia quindi i permessi per chiamare la funzione (utilizzato solo per chargeTokens)
 export const checkIfAdmin = async (req: Request, res: Response, next: NextFunction) => {
     const loggedUser = (req as CustomRequest).user;  //recupero l'utente loggato per controllarne il ruolo
     if (loggedUser.role !== 'admin') {
@@ -58,6 +64,7 @@ export const checkIfAdmin = async (req: Request, res: Response, next: NextFuncti
     }
 }
 
+//controllo ulteriore sull'email per risolvere eventuali errori di scrittura
 const validateEmail = (email: String) => {
     return String(email)
         .toLowerCase()
@@ -66,6 +73,7 @@ const validateEmail = (email: String) => {
         );
 };
 
+//controllo sull'inserimento della password
 export const checkValidPassword = async (req: Request, res: Response, next: NextFunction) => {
     if (req.query.password === undefined) {
         return res.status(Code.BAD_REQUEST).json({
@@ -98,6 +106,7 @@ export const checkLinks = async (req: Request, res: Response, next: NextFunction
     }
 }
 
+//nella ricerca dei grafi filtrati per nodi e archi il numero da ricercare deve essere valido e coincidere con quello richiesto
 export const checkNumberOfNodes = async (req: Request, res: Response, next: NextFunction) => {
     if (req.body.numberOfNodes === undefined || typeof req.body.numberOfNodes !== 'number') {
         return res.status(Code.BAD_REQUEST).json({
@@ -118,7 +127,7 @@ export const checkNumberOfLinks = async (req: Request, res: Response, next: Next
     }
 }
 
-//il nuovo peso deve essere un numero intero positivo
+//il nuovo peso di un arco deve essere un numero intero positivo
 export const checkValidNewWeight = async (req: Request, res: Response, next: NextFunction) => {
     if (req.body.newWeight === undefined || typeof req.body.newWeight !== 'number' || req.body.newWeight < 0) {
         return res.status(Code.BAD_REQUEST).json({
@@ -129,6 +138,7 @@ export const checkValidNewWeight = async (req: Request, res: Response, next: Nex
     }
 }
 
+//recupero il link indicato dall'utente e controllo se sia valido
 export const checkValidLink = async (req: Request, res: Response, next: NextFunction) => {
     if (req.body.link === undefined) {
         return res.status(Code.BAD_REQUEST).json({
@@ -139,6 +149,7 @@ export const checkValidLink = async (req: Request, res: Response, next: NextFunc
     }
 }
 
+//controllo sull'id del modello indicato dall'utente, deve essere un numero definito e positivo
 export const checkValidIDGraph = async (req: Request, res: Response, next: NextFunction) => {
     if (req.body.idGraph === undefined || req.body.idGraph <= 0) {
         return res.status(Code.BAD_REQUEST).json({
@@ -149,6 +160,7 @@ export const checkValidIDGraph = async (req: Request, res: Response, next: NextF
     }
 }
 
+//controllo sui nodi di partenza e fine indicati dall'utente
 export const checkNodeFrom = async (req: Request, res: Response, next: NextFunction) => {
     if (req.body.from === undefined) {
         return res.status(Code.BAD_REQUEST).json({
@@ -169,6 +181,7 @@ export const checkNodeTo = async (req: Request, res: Response, next: NextFunctio
     }
 }
 
+//controllo sul range ammissibile (positivo con goal inferiore a start) per la run iterativa della simulazione
 export const checkRange = async (req: Request, res: Response, next: NextFunction) => {
     const start = req.body.startingValue;
     const goal = req.body.endingValue;
@@ -181,6 +194,7 @@ export const checkRange = async (req: Request, res: Response, next: NextFunction
     }
 }
 
+//controllo sulla validità del passo di incremento richiesto dall'utente
 export const checkIncrement = async (req: Request, res: Response, next: NextFunction) => {
     if (req.body.increment === undefined) {
         return res.status(Code.BAD_REQUEST).json({
