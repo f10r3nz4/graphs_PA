@@ -277,7 +277,7 @@ Esempio:
 
 ***/runGraph ERROR:***
 
-![rungraph error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/rungraph%20error.png?raw=true)
+![rungraph error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/rungrapherror.png?raw=true)
 
 ***/runs:***
 
