@@ -14,6 +14,7 @@ La specifica completa del progetto è consultabile in questo [documento](https:/
 - [NodeJS](https://nodejs.org/en/)
 - [npm ngraph.graph](https://www.npmjs.com/package/ngraph.graph)
 - [npm ngraph.path](https://www.npmjs.com/package/ngraph.path)
+- [npm nodemon](https://www.npmjs.com/package/nodemon)
 - [VS Code](https://code.visualstudio.com/)
 - [JSON Web Token](https://jwt.io/)
 
@@ -72,11 +73,11 @@ ruolo:    admin
 
 I modelli sono:
 
-Grafo con ID 1 ha 10 nodi e 16 archi, non orientato, associato all'utente user@user1.it.
+Grafo con ID 1 ha 10 nodi e 16 archi, non orientato, associato all'utente user@user1.it. Rappresenta la distanza in km tra alcune città italiane.
 
-Grafo con ID 2 ha 21 nodi e 30 archi, orientato, associato all'utente user@user1.it.
+Grafo con ID 2 ha 21 nodi e 30 archi, orientato, associato all'utente user@user1.it. Rappresenta la distanza tra punti.
 
-Per visualizzarli in fase di test, dopo aver effettuato il login (autenticazione inserendo il token all'interno di header-authorization), occorre utilizzare le rotte ``` /graphs ``` e ``` /nodes ```, che sono rotte di test utili per verificare il corretto inserimento dei grafi.
+Per visualizzarli in fase di test, dopo aver effettuato il login (autenticazione), occorre utilizzare le rotte get ``` /graphs ```, ``` /users ``` e ``` /nodes ```, che sono rotte di test utili per verificare il corretto inserimento delle informazioni nel DB.
 
 ## Utilizzo
 All'indirizzo si aggiungono le seguenti rotte
@@ -103,7 +104,7 @@ Esempio:
   - ``` email ```, email dell'utente a cui aggiungere i tokens
   - ``` amount ```, quantità di credito da aggiungere all'utente
 - Formato risposta:  ``` application/json ```
-- Descrizione: l'utente autenticato come admin, indicando email e numero di token aggiunge credito all'utente
+- Descrizione: l'utente autenticato come admin, indicando email e numero di token, aggiunge credito all'utente
 
 Esempio:
 
@@ -141,7 +142,7 @@ Esempio:
 
 Esempio:
 
-![esempio graph/filter](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/Schermata%202022-11-10%20alle%208.07.35%20PM.png?raw=true)
+![esempio graph/filter](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/screen%20filter.png?raw=true)
 
 ### /graphs/modifyWeight
 - Metodo:  ``` POST ```
@@ -151,11 +152,13 @@ Esempio:
   - ``` newWeight ```, il nuovo peso da associare al link desiderato
   - ``` link ```, id del link indicato come nodopartenza-nodoarrivo-idgrafo
 - Formato risposta:  ``` application/json ```
-- Descrizione: l'utente, specificando l'id di uno specifico arco, può modificarne il peso
+- Descrizione: l'utente, specificando l'id di uno specifico arco, può modificarne il peso attraverso una media esponenziale
+
+p(i,j) = alpha * p(i,j) + (1 – alpha)*p_new(i,j) 
 
 Esempio:
 
-![esempio graph/filter](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/Schermata%202022-11-10%20alle%208.07.35%20PM.png?raw=true)
+![esempio graph/modifyWeight](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/screen%20modify%20weight.png?raw=true)
 
 ### /runGraph
 - Metodo:  ``` GET ```
@@ -166,15 +169,13 @@ Esempio:
   - ``` algorithm ```, algoritmo da utilizzare per l'esecuzione, a scelta tra nba, astar e agreedy
   - ``` from ```, nome del nodo di partenza per l'esecuzione
   - ``` to ```, nome del nodo di fine per l'esecuzione
-  - ``` isOriented ```, non è obbligatorio inserirlo in quanto viene recuperato dal DB, indica se il grafo è orientato o meno
-  - ``` heuristic ```, euristica da utilizzare per l'esecuzione, 1 (norma 1) o 2 (norma 2)
+  - ``` heuristic ```, euristica da utilizzare per l'esecuzione, 1 (norma 1, distanza Euclidea) o 2 (norma 2, distanza di Manhattan)
 - Formato risposta:  ``` application/json ```
-- Descrizione: l'utente esegue il modello indicando l'id del grafo, l'algoritmo di esecuzione (astar, agreedy, nba), il nome dei nodi di inizio e fine, l'ordinamento e l'euristica (norma 1 o norma 2)
+- Descrizione: l'utente esegue il modello indicando l'id del grafo, l'algoritmo di esecuzione (astar, agreedy, nba), il nome dei nodi di inizio e fine, l'ordinamento e l'euristica (norma 1 o norma 2). Viene restituito il risultato con: costo in termini di credito che viene detratto all'utente, tempo in millisecondi di esecuzione, costo ottimo in termini di somma dei pesi degli archi del cammino minimo, flag di orientamento e nome dell'euristica scelta.
 
 Esempio:
 
-![esempio runGraph](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/screen%20runGraph%20body.png?raw=true)
-![esempio runGraph](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/screen%20runGraph%20json.png?raw=true)
+![esempio runGraph](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/screen%20run%20graph.png?raw=true)
 
 ### /runs
 - Metodo:  ``` GET ```
@@ -189,7 +190,7 @@ Esempio:
 
 
 ### /simulation
-- Metodo:  ``` GET ```
+- Metodo:  ``` POST ```
 - Ruolo utente: user, admin
 - Autenticazione JWT: Sì
 - Formato risposta:  ``` application/json ```
@@ -202,12 +203,13 @@ Esempio:
   - ``` algorithm ```, nome dell'algoritmo da usare tra astar, agreedt e nba
   - ``` idGraph ```, ID del modello
   - ``` heuristic ```, numero dell'euristica, 1 norma 1 o 2 norma 2
-- Descrizione: l'utente autenticato, indicando il grafo da utilizzare, il link da modificare, un peso di partenza e un peso di fine, un passo di incremento, l'algoritmo e l'euristica da utilizzare, esegue una simulazione che calcola in modo iterativo il peso migliore sul link perchè il costo sia ottimo secondo l'algoritmo usato
+- Descrizione: l'utente autenticato, indicando il grafo da utilizzare, il link da modificare, un peso di partenza e un peso di fine, un passo di incremento, l'algoritmo e l'euristica da utilizzare, esegue una simulazione che calcola in modo iterativo il peso migliore sul link perchè il costo sia ottimo secondo l'algoritmo usato. Il risultato contiene tutti le esecuzioni con i pesi nel range specificato con quello migliore (peso che dà costo minimo) come best result.
 
 Esempio:
 
 ![esempio simulation](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/simulation%20req.png?raw=true)
-![esempio simulation](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/simulation%20res.png?raw=true)
+![esempio simulation](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/simulation%20res1.png?raw=true)
+![esempio simulation](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/simulation%20res2.png?raw=true)
 
 
 ## Progettazione
@@ -223,7 +225,7 @@ Esempio:
 | /graph/modifyWeight | POST   | l'utente, indicando grafo e arco può modificarne il peso                           | admin o user | SI                 |
 | /runGraph           | GET    | l'utente esegue il modello indicando algoritmo, euristica e nodo di inizio e fine  | admin o user | SI                 |
 | /runs               | GET    | l'utente visualizza tutte le esecuzioni da lui effettuate                          | admin o user | SI                 |
-| /simulation         | GET    | l'utente, indicando peso di inizio e fine ed un passo di incremento, può trovare la soluzione ottima in modo iterativo | admin o user | SI                 |
+| /simulation         | POST   | l'utente, indicando peso di inizio e fine ed un passo di incremento, può trovare la soluzione ottima in modo iterativo | admin o user | SI                 |
 
 ### Diagrammi UML
 
@@ -241,7 +243,7 @@ Esempio:
 
 ![login error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/login%20error.png?raw=true)
 
-***/chargeTokens SUCCESS:***
+***/chargeTokens:***
 
 ![chargetokens success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/chargetoken%20success.png?raw=true)
 
@@ -277,7 +279,7 @@ Esempio:
 
 ![rungraph error](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/rungraph%20error.png?raw=true)
 
-***/runs SUCCESS:***
+***/runs:***
 
 ![runs success](https://github.com/f10r3nz4/graphs_PA/blob/main/uml%20e%20screen/runs.png?raw=true)
 
@@ -293,15 +295,15 @@ Esempio:
 
 #### MVC
 
-Pattern Model-View-Controller utilizzato per dividere il codice in blocchi di funzionalità distinte. Nel presente la componente View non è stataa inserita in quanto non richiesta, quindi il pattern diventa Model - Controller.
+Pattern Model-View-Controller utilizzato per dividere il codice in blocchi di funzionalità distinte. Nel presente progetto la componente View non è stataa inserita in quanto non richiesta, quindi il pattern diventa Model - Controller.
 - *Controller*, composto da "user" e "graph" che gestiscono rispettivamente l'utente e il modello. Riceve i comandi e reagisce eseguendo le operazioni richieste restituendo un risultato JSON. Il primo gestisce tutto quello che riguarda l'inserimento del credito e il recupero delle informazioni dell'utente. Il secondo gestisce ogni funzione collegata al grafo, dall'esecuzione del modello alla simulazione e al cambio dei pesi, oltre a restituire le informazioni relative a nodi e archi.
-- *Model*, si interfaccia con la base di dati, ne astrae le infomrazioni in modo che possano essere manipolate dal Controller. Il model in questo caso viene implementato tramite il DAO che funge da ponte tra il controller e la base di dati contenente le informazioni di interesse.
+- *Model*, si interfaccia con la base di dati, ne astrae le informazioni in modo che possano essere manipolate dal Controller. Il model in questo caso viene implementato tramite il DAO che funge da ponte tra il controller e la base di dati contenente le informazioni di interesse.
 
 L'utilizzo di questo pattern si è ritenuto necessario perchè permette di implementare un servizio in maniera veloce e supporta le funzioni asincrone.
 
 #### DAO
 
-Pattern DAO per la gestione della persistenza, utilizzato per il mantenimento di una rigida separazione tra le componenti di un'applicazione. Si interfacca con il Controller per accedere al database ed è usato per separare la logica di business dalla logica di acceso ai dati. Nel presente progetto il pattern DAO è diviso per ogni tabella del database mysql, ognuno si occupa di tradurre la richiesta nel linguaggio di interrogazione del DB con le query apposite, sono presenti DAO per gli archi, i nodi, i grafi, le esecuzioni e gli utenti. Le query si trovano nell'omonima cartella e sono divise per utente, grafo ed esecuzione, vengono salvate in una costante che poi viene esportata e richiamata al bisogno nei DAO.
+Pattern DAO per la gestione della persistenza, utilizzato per il mantenimento di una rigida separazione tra le componenti di un'applicazione. Si interfacca con il Controller per accedere al database ed è usato per separare la logica di business dalla logica di acceso ai dati. Nel presente progetto il pattern DAO è diviso per ogni tabella del database mysql, ognuno si occupa di tradurre la richiesta nel linguaggio di interrogazione del DB con le query apposite. Sono presenti DAO per gli archi, i nodi, i grafi, le esecuzioni e gli utenti. Le query si trovano nell'omonima cartella e sono divise per utente, grafo ed esecuzione, vengono salvate in una costante che poi viene esportata e richiamata al bisogno nei DAO.
 
 Questo pattern è stato utilizzato per interfacciarsi in maniera efficace con il database ed avere quindi uno strato intermedio tra il controller che manipola i dati nelle funzioni ed i dati stessi, senza dover richiamare direttamente la query necessaria.
 
