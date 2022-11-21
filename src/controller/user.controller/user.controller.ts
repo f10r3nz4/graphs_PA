@@ -33,6 +33,7 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
     }
 }
 
+
 //restituisce le informazioni sull'utente richiamato tramite email
 export const getUser = async (req: Request, res: Response): Promise<Response> => {
     console.info(`[${new Date().toLocaleString()}] New users request`);
